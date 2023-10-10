@@ -44,13 +44,12 @@ score = rf.score(X_test_transformed, y_test)
 
 score, mae, rmse, y_pred[:5], y_test[:5].values
 
-from joblib import dump
+from joblib import dump, load
 
 # After training your model and transformer:
 dump(rf, 'trained_model.joblib')
 dump(ct, 'transformer.joblib')
 
-from joblib import load
 
 # Load the model and transformer
 rf = load('trained_model.joblib')
