@@ -16,12 +16,12 @@ X = data.iloc[:, :-1]
 y = data.iloc[:, -1]
 
 # Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=9)
 
 # Create the column transformer
 ct = ColumnTransformer([
-    ('one_hot_encoder', OneHotEncoder(), ['sex', 'smoker', 'region']),
-    ('standard_scaler', StandardScaler(), ['age', 'bmi', 'children'])
+    ('one_hot_encoder', OneHotEncoder(), [1, 4, 5]),
+    ('standard_scaler', StandardScaler(), [0, 2, 3]),
 ], remainder='passthrough')
 
 # Transform training and test data
@@ -29,7 +29,7 @@ X_train_transformed = ct.fit_transform(X_train)
 X_test_transformed = ct.transform(X_test)
 
 # Create the random forest regression model  
-rf = RandomForestRegressor(n_estimators=100, random_state=1)
+rf = RandomForestRegressor(n_estimators=100, random_state=9)
 
 # Fit the model to the training data
 rf.fit(X_train_transformed, y_train)
@@ -57,6 +57,9 @@ ct = load('transformer.joblib')
 
 # Now, you can use `rf` and `ct` in your predict_insurance_cost function without needing the dataset.
 
+# print R squared score
+print(f"R squared score: {score:.2f}")
+
 
 def predict_insurance_cost(age, sex, bmi, children, smoker, region, model=rf, transformer=ct):
     # Create a DataFrame from the inputs
@@ -78,5 +81,5 @@ def predict_insurance_cost(age, sex, bmi, children, smoker, region, model=rf, tr
     return prediction[0]
 
 # Test the function with a sample input
-predict_insurance_cost(22, 'male', 19, 0, 'no', 'northwest')
+predict_insurance_cost(19, 'female', 27.9, 0, 'yes', 'southwest')
 
