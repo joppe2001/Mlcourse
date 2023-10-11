@@ -19,13 +19,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 ## Create the column transformer
 ct = ColumnTransformer([
-    ('one_hot_encoder', OneHotEncoder(drop='first'), ['gender', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'bp_category']),
+    ('one_hot_encoder', OneHotEncoder(drop='first'), [ 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'bp_category']),
     ('standard_scaler', StandardScaler(), ['age', 'height', 'weight', 'ap_hi', 'ap_lo', 'bmi']),
 ], remainder='passthrough')
 ## Transform training and test data
 
 X_train_transformed = ct.fit_transform(X_train)
 X_test_transformed = ct.transform(X_test)
+
     
 ## Create the random forest regression model
 
@@ -79,7 +80,7 @@ def predict_cardiovascular(age, gender, height, weight, systolic_bp, diastolic_b
     # Create a DataFrame with the input data
     input_data = pd.DataFrame({
         'age': [age],
-        'gender': [gender],
+        'gender': [gender if gender == 1 else 0],
         'height': [height],
         'weight': [weight],
         'ap_hi': [systolic_bp],
@@ -108,7 +109,7 @@ def predict_cardiovascular(age, gender, height, weight, systolic_bp, diastolic_b
 ## Test the function with a sample input
 
 age = 22 * 365.25  # age in days
-gender = 1
+gender = 0
 height = 184
 weight = 67
 systolic_bp = 100
