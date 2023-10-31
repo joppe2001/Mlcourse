@@ -1,4 +1,3 @@
-# Importing the libraries
 import numpy as np
 import pandas as pd
 
@@ -27,18 +26,18 @@ for i in range(0, len(X)):
     prompt = ' '.join(prompt)
     corpus.append(prompt)
 
-# Creating the Bag of Words model
+# Creating the Bag of Words model with reduced features
 from sklearn.feature_extraction.text import CountVectorizer
-cv = CountVectorizer(max_features = 1500)
-X = cv.fit_transform(corpus).toarray()
+cv = CountVectorizer(max_features = 500)
+X = cv.fit_transform(corpus)  # No .toarray() here to keep it as a sparse matrix
 
 # Splitting the dataset into the Training set and Test set for HTML prediction
 from sklearn.model_selection import train_test_split
 X_train_html, X_test_html, y_train_html, y_test_html = train_test_split(X, y_html, test_size = 0.20, random_state = 0)
 
-# Training the Random Forest model on the Training set for HTML prediction
+# Training the Random Forest model on the Training set for HTML prediction with reduced trees and depth
 from sklearn.ensemble import RandomForestClassifier
-classifier_html = RandomForestClassifier(n_estimators=100, random_state=0)
+classifier_html = RandomForestClassifier(n_estimators=50, max_depth=10, random_state=0)
 classifier_html.fit(X_train_html, y_train_html)
 
 # Splitting the dataset into the Training set and Test set for CSS prediction
